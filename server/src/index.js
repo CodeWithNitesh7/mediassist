@@ -1,4 +1,4 @@
-```js
+
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -93,4 +93,3 @@ start().catch((e) => {
   console.error('Failed to start', e);
   process.exit(1);
 });
-```
