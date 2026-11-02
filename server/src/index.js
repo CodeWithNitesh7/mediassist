@@ -17,7 +17,7 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: 'https://mediassist-r3if.vercel.app' || 'http://localhost:5173',
     credentials: true, // required so the browser sends the auth cookie
   })
 );
