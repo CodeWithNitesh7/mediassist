@@ -3,18 +3,16 @@ import User from '../models/User.js';
 
 export const COOKIE_NAME = 'hc_token';
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 export const cookieOptions = {
   httpOnly: true,
 
-  // Production HTTPS ke liye
-  secure: isProduction,
+  // HTTPS production frontend/backend ke liye
+  secure: true,
 
-  // Frontend aur backend different domains par hain
-  sameSite: isProduction ? 'none' : 'lax',
+  // Netlify frontend + Render backend = cross-site
+  sameSite: 'none',
 
-  // Cookie har API route par available rahegi
+  // Cookie all backend routes ke liye
   path: '/',
 
   // 7 days
@@ -25,6 +23,10 @@ export const cookieOptions = {
  * Create JWT token
  */
 export function signToken(user) {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not configured.');
+  }
+
   return jwt.sign(
     {
       id: user._id.toString(),
@@ -38,14 +40,6 @@ export function signToken(user) {
 
 /**
  * Authentication middleware
- *
- * Checks:
- * 1. Cookie exists
- * 2. JWT is valid
- * 3. User still exists in database
- *
- * If valid:
- * req.user = user
  */
 export async function requireAuth(req, res, next) {
   try {
@@ -84,9 +78,6 @@ export async function requireAuth(req, res, next) {
 
 /**
  * Role based authorization
- *
- * Example:
- * router.get('/admin', requireAuth, requireRole('admin'), ...)
  */
 export const requireRole =
   (...roles) =>
@@ -112,8 +103,8 @@ export const requireRole =
 export function clearAuthCookie(res) {
   res.clearCookie(COOKIE_NAME, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    secure: true,
+    sameSite: 'none',
     path: '/',
   });
 }
