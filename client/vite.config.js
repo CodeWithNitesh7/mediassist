@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    proxy: { '/api': 'http://localhost:5000' }, // same-origin cookies in dev
+    proxy: { '/api': 'https://medassist-frontend-c1ds.onrender.com' }, // same-origin cookies in dev
   },
 });
